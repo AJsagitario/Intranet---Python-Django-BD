@@ -1,0 +1,52 @@
+#chatBoard{display:block}
+#messages{min-height:40vh;background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><g fill="none" stroke="%23d9e3ff" stroke-width="1"><circle cx="60" cy="60" r="40"/></g></svg>') 95% 10%/160px no-repeat;
+  padding:12px;border-radius:10px;border:1px solid var(--line)}
+.msg{max-width:70%;padding:10px 12px;margin:6px 0;border-radius:12px}
+.msg.me{background:#dfe7ff;margin-left:auto}
+.msg.other{background:#f5f7fb}
+.msg small{color:#667085;margin-left:6px}
+.input-row{display:flex;gap:8px;margin-top:12px}
+.input-row input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
+.input-row button{padding:10px 14px;border-radius:10px;border:1px solid #cdd7f5;background:#e1e9ff;cursor:pointer}
+
+
+.chat-layout{display:grid;grid-template-columns:260px 1fr;gap:16px}
+.chat-side{padding:12px}
+.side-section{margin-bottom:18px}
+.side-title{font-weight:700;margin:4px 0 8px;color:#0f1d40}
+.side-list{display:flex;flex-direction:column;gap:4px;max-height:36vh;overflow:auto}
+.side-item{padding:8px 10px;border-radius:8px;text-decoration:none;color:#1f2937}
+.side-item:hover{background:#eef3ff}
+.side-item.active{background:#e1e9ff}
+.side-empty{color:#667085;font-size:13px}
+.side-inline{display:flex;gap:6px;margin-top:8px}
+.side-inline input{flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:6px 8px}
+.side-inline button{border:1px solid #cdd7f5;background:#e1e9ff;border-radius:8px;padding:6px 10px;cursor:pointer}
+
+.chat-main{display:flex;flex-direction:column;gap:12px}
+.chat-header{display:flex;align-items:center;justify-content:space-between}
+.header-actions{display:flex;gap:12px}
+.btn-link{background:none;border:none;color:#1f4eff;cursor:pointer}
+.btn-link.danger{color:#c2410c}
+
+.chat-board{min-height:46vh;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+.msg{max-width:70%;padding:10px 12px;margin:6px 0;border-radius:12px}
+.msg.me{background:#dfe7ff;margin-left:auto}
+.msg.other{background:#f5f7fb}
+.msg small{color:#667085;margin-left:6px}
+
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;outline:none}
+.input-row button{padding:10px 14px;border-radius:10px;border:1px solid #cdd7f5;background:#e1e9ff;cursor:pointer}
+
+/* Composer estilo Slack */
+.composer{display:flex; margin-top:8px}
+.composer-box{display:flex; align-items:flex-end; gap:8px; width:100%;
+  border:1px solid #e5e7eb; border-radius:12px; background:#fff; padding:8px 10px}
+.composer textarea{
+  flex:1; resize:none; border:none; outline:none; font:inherit; line-height:1.4; max-height:160px;
+}
+.composer-actions{display:flex; gap:8px; align-items:center}
+.icon-btn{border:1px solid #cdd7f5; background:#eef3ff; border-radius:8px; padding:8px; cursor:pointer}
+.send-btn{border:1px solid #cdd7f5; background:#bcd0ff; border-radius:8px; padding:8px 14px; cursor:pointer}
+.send-btn:disabled{opacity:.5; cursor:not-allowed}

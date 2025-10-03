@@ -1,0 +1,18 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Intranet Go Visión{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% include "_navbar.html" %}
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+  <script src="{% static 'js/navbar.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

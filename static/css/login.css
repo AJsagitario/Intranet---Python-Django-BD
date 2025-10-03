@@ -1,0 +1,11 @@
+.login-wrap{display:grid;place-items:center;min-height:calc(100vh - 64px)}
+.login-card{width:520px;max-width:92vw;background:#fff;border:1px solid #cdd7f5;
+  border-radius:12px;padding:28px;text-align:center}
+.login-card .logo img{height:64px}
+.login-card h1{font-size:18px;margin:10px 0 16px;color:#0b1736}
+.form-row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);
+  background:#fafbff;border-radius:10px;padding:10px 12px;margin:10px 0}
+.form-row input{border:none;outline:none;background:transparent;width:100%}
+.btn{display:inline-block;width:100%;padding:12px 14px;border:none;background:var(--btn);
+  color:#0b1736;font-weight:600;border-radius:10px;cursor:pointer}
+.btn:hover{filter:brightness(.96)} .small{margin-top:12px;color:var(--muted);font-size:12px}

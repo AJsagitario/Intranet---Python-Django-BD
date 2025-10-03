@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login - Go Visión{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/login.css' %}">{% endblock %}
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="logo"><img src="{% static 'img/govision-logo.png' %}" alt="Go Visión"></div>
+    <h1>Go Vision</h1>
+    <form method="post">{% csrf_token %}
+      <div class="form-row">👤 {{ form.username }}</div>
+      <div class="form-row">🔒 {{ form.password }}</div>
+      <button class="btn" type="submit">Iniciar sesión</button>
+    </form>
+    <div class="small"><a href="#">¿Olvidaste tu contraseña?</a></div>
+  </div>
+</div>
+{% endblock %}
+

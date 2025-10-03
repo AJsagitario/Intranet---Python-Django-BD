@@ -1,0 +1,23 @@
+:root{
+  --bg:#f5f6f8; --panel:#fff; --ink:#101828; --muted:#667085; --line:#e5e7eb;
+  --brand:#c7e0ff; --brand-ink:#0f1d40; --btn:#9fb5e6;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.page{max-width:1200px;margin:18px auto;padding:0 16px}
+
+/* Topbar */
+.topbar{position:sticky;top:0;z-index:40;background:#fff;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;
+  gap:16px;padding:8px 16px}
+.topbar .brand img{height:36px}
+.search{flex:1;display:flex} .search input{width:100%;padding:10px 12px;
+  border:1px solid var(--line);border-radius:10px;background:#f8fafc}
+.mainnav a{margin:0 8px;text-decoration:none;color:#1f2937;padding:8px 10px;
+  border-radius:8px}
+.mainnav a.active, .mainnav a:hover{background:#e6efff}
+.userbox{display:flex;align-items:center;gap:12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:#c7d6f6;display:grid;place-items:center}
+
+/* Tarjetas y paneles */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}

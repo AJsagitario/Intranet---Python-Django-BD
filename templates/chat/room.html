@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if is_channel %}#{{ room }}{% else %}DM{% endif %} - Chat{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/chat.css' %}">{% endblock %}
+
+{% block content %}
+<div class="chat-layout">
+  <aside class="chat-side card">
+    <div class="side-section">
+      <div class="side-title">Canales</div>
+      <div class="side-list">
+        {% for ch in sidebar_channels %}
+          <a class="side-item {% if is_channel and ch.name == room %}active{% endif %}" href="{% url 'room' ch.name %}"># {{ ch.name }}</a>
+        {% empty %}
+          <div class="side-empty">Aún no estás en ningún canal.</div>
+        {% endfor %}
+      </div>
+      <form class="side-inline" action="{% url 'create_channel' %}" method="post">
+        {% csrf_token %}
+        <input name="name" placeholder="nuevo-canal" />
+        <button>Crear</button>
+      </form>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Mensajes directos</div>
+      <div class="side-list">
+        {% for u in sidebar_dm_users %}
+          <a class="side-item {% if not is_channel and current_dm_id == u.id %}active{% endif %}" href="{% url 'dm' u.id %}">👤 {{ u.username }}</a>
+        {% empty %}
+          <div class="side-empty">Sin usuarios</div>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <section class="chat-main">
+    <div class="chat-header">
+      {% if is_channel %}
+        <h2>#{{ room }}</h2>
+        <div class="header-actions">
+          <a class="btn-link" href="{% url 'channel_members' room %}">Miembros</a>
+          <form action="{% url 'leave_channel' room %}" method="post" onsubmit="return confirm('¿Salir de #{{ room }}?');">
+            {% csrf_token %}<button type="submit" class="btn-link">Salir del canal</button>
+          </form>
+
+          {% if can_clear %}
+          <form action="{% url 'clear_channel' room %}" method="post" onsubmit="return confirm('¿Limpiar historial de #{{ room }}?');">
+            {% csrf_token %}<button type="submit" class="btn-link danger">Limpiar historial</button>
+          </form>
+          {% endif %}
+        </div>
+      {% else %}
+        <h2>DM con {{ dm_user.username }}</h2>
+      {% endif %}
+    </div>
+
+    <div id="messages" class="chat-board">
+      {% for m in messages %}
+        <div class="msg {% if m.sender == request.user %}me{% else %}other{% endif %}">
+          <strong>{{ m.sender.username }}</strong>: {{ m.body }}
+          <small>{{ m.created_at|date:"H:i" }}</small>
+        </div>
+      {% endfor %}
+    </div>
+
+    <form id="chatForm" class="composer" data-room="{{ room }}" data-me="{{ request.user.username }}">
+      {% csrf_token %}
+      <div class="composer-box">
+        <textarea id="chatInput" rows="1" placeholder="Escribe un mensaje… (Enter para enviar, Shift+Enter para salto de línea)"></textarea>
+        <div class="composer-actions">
+          <label class="icon-btn" title="Adjuntar (próximamente)">
+            📎 <input id="fileInput" type="file" style="display:none" disabled>
+          </label>
+          <button id="emojiBtn" type="button" class="icon-btn" title="Insertar emoji">😊</button>
+          <button id="sendBtn" class="send-btn" disabled>Enviar</button>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}

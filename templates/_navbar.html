@@ -1,0 +1,23 @@
+{% load static %}
+<header class="topbar">
+  <a class="brand" href="{% url 'home' %}">
+    <img src="{% static 'img/govision-logo.png' %}" alt="Go Visión" />
+  </a>
+
+  <div class="search">
+    <input placeholder="Buscar…" />
+  </div>
+
+  <nav class="mainnav">
+    <a href="{% url 'home' %}" data-active="chat">Mensajes</a>
+    <a href="#" data-active="files">Archivos</a>
+    <a href="#" data-active="tasks">Tareas</a>
+  </nav>
+
+  <div class="userbox">
+    <span class="bell" title="Notificaciones">🔔</span>
+    <div class="avatar">👤</div>
+    <a class="logout" href="{% url 'logout' %}">Salir</a>
+  </div>
+</header>
+

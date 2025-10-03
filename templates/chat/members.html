@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Miembros de #{{ channel.name }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/chat.css' %}">{% endblock %}
+
+{% block content %}
+<div class="chat-layout">
+  <aside class="chat-side card">
+    <div class="side-section">
+      <div class="side-title">Canales</div>
+      <div class="side-list">
+        {% for ch in sidebar_channels %}
+          <a class="side-item" href="{% url 'room' ch.name %}"># {{ ch.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="side-section">
+      <div class="side-title">Mensajes directos</div>
+      <div class="side-list">
+        {% for u in sidebar_dm_users %}
+          <a class="side-item" href="{% url 'dm' u.id %}">👤 {{ u.username }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <section class="chat-main">
+    <div class="chat-header">
+      <h2>Miembros de #{{ channel.name }}</h2>
+      <a class="btn-link" href="{% url 'room' channel.name %}">Volver al canal</a>
+    </div>
+
+    {% if messages %}{% for m in messages %}<div class="card">{{ m }}</div>{% endfor %}{% endif %}
+
+    <div class="card" style="margin-bottom:12px">
+      <h3 style="margin:0 0 10px">Miembros actuales</h3>
+      <ul>
+        {% for u in current %}
+          <li>
+            {{ u.username }}
+            {% if u.id != channel.created_by_id %}
+              <a class="btn-link danger" href="{% url 'remove_member' channel.name u.id %}" onclick="return confirm('¿Quitar {{ u.username }}?')">Quitar</a>
+            {% else %} (creador)
+            {% endif %}
+          </li>
+        {% empty %}
+          <li>No hay miembros (¿cómo llegaste aquí? 😅)</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px">Agregar usuarios</h3>
+      <form action="{% url 'add_member' channel.name %}" method="post" class="side-inline">
+        {% csrf_token %}
+        <select name="user_id" required>
+          <option value="">— Selecciona —</option>
+          {% for u in suggested %}
+            <option value="{{ u.id }}">{{ u.username }}</option>
+          {% endfor %}
+        </select>
+        <button>Agregar</button>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
