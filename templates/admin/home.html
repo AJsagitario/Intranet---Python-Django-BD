@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Panel de administración{% endblock %}
+
+{% block extra_css %}
+<style>
+  .admin-wrap{max-width:1100px;margin:24px auto;padding:0 16px 24px;}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0 24px;}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .k{font-size:.9rem;color:#6b7280;margin-bottom:6px}
+  .v{font-weight:700;font-size:1.4rem}
+  .cols{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  .box{background:#fff;border:1px solid #e5e7eb;border-radius:12px}
+  .box h3{margin:0;padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:1rem}
+  .box .inner{padding:12px 14px}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .muted{color:#6b7280;font-size:.9rem}
+  .actions a{margin-left:8px;font-size:.9rem}
+  .btn{display:inline-block;padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb}
+  .btn-primary{border-color:#2563eb;background:#2563eb;color:#fff}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  input[type="search"]{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px}
+  .grid-quick{display:flex;gap:8px;flex-wrap:wrap}
+  .grid-quick a{padding:6px 10px;border:1px solid #d1d5db;border-radius:8px;background:#fff}
+  .right{ text-align:right }
+  @media (max-width:960px){ .cards{grid-template-columns:repeat(2,1fr)} .cols{grid-template-columns:1fr} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-wrap">
+  
+
+  <h1 style="margin:8px 0 12px">Panel de administración</h1>
+  <p class="muted">Bienvenido, {{ request.user.get_full_name|default:request.user.username }}.</p>
+
+  <!-- Acciones rápidas -->
+  <div class="grid-quick" style="margin:12px 0 6px">
+    <a href="{% url 'home' %}">Ir al chat</a>
+    <a href="{% url 'profile' %}">Mi perfil</a>
+    <a href="{% url 'create_channel' %}" class="btn">Crear nuevo canal</a>
+  </div>
+
+  <!-- Métricas -->
+  <div class="cards">
+    <div class="card"><div class="k">Usuarios (activos / total)</div><div class="v">{{ users_activos }} / {{ users_total }}</div></div>
+    <div class="card"><div class="k">Canales</div><div class="v">{{ canales_total }}</div></div>
+    <div class="card"><div class="k">Áreas</div><div class="v">{{ areas_total }}</div></div>
+    <div class="card"><div class="k">Sesión</div><div class="v">Staff</div></div>
+  </div>
+
+  <div class="cols">
+    <!-- Canales -->
+    <div class="box">
+      <h3>Canales</h3>
+      <div class="inner">
+        {% if canales %}
+          <div class="list">
+            {% for ch in canales %}
+              <div class="row">
+                <div>
+                  <a href="{% url 'room' ch.name %}">#{{ ch.name }}</a>
+                  <span class="muted">· creado por {{ ch.created_by.username }}</span>
+                </div>
+                <div class="actions">
+                  <a class="btn" href="{% url 'channel_members' ch.name %}">Miembros</a>
+                  <a class="btn" href="{% url 'clear_channel' ch.name %}">Limpiar</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted">No hay canales.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Usuarios -->
+    <div class="box">
+      <h3>Usuarios</h3>
+      <div class="inner">
+        <div class="toolbar">
+          <input id="userFilter" type="search" placeholder="Filtrar usuarios (nombre, usuario, email)..." />
+        </div>
+        <div id="userList" class="list" style="margin-top:10px">
+          {% for u in users %}
+            <div class="row user-item"
+                 data-q="{{ u.username|lower }} {{ u.first_name|lower }} {{ u.last_name|lower }} {{ u.email|lower }}">
+              <div>
+                <strong>{{ u.username }}</strong>
+                <span class="muted">
+                  · {{ u.get_full_name|default:"—" }} · {{ u.email|default:"sin correo" }}
+                  {% if u.is_staff %} · staff{% endif %}
+                  {% if u.is_superuser %} · superuser{% endif %}
+                </span>
+              </div>
+              <div class="actions right">
+                <!-- Aquí podrías enlazar a una vista de edición de usuario propia -->
+                <a class="btn" href="{% url 'dm' u.id %}">DM</a>
+              </div>
+            </div>
+          {% empty %}
+            <p class="muted">Sin usuarios.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Usuarios recientes -->
+  <div class="box" style="margin-top:16px">
+    <h3>Incorporaciones recientes</h3>
+    <div class="inner">
+      {% if users_recientes %}
+        <div class="list">
+          {% for u in users_recientes %}
+            <div class="row">
+              <div><strong>{{ u.username }}</strong> <span class="muted">· {{ u.date_joined|date:"Y-m-d H:i" }}</span></div>
+              <div class="actions"><a class="btn" href="{% url 'dm' u.id %}">DM</a></div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted">Sin altas recientes.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Filtro instantáneo de usuarios en el panel
+  (function(){
+    const box = document.getElementById('userList');
+    const input = document.getElementById('userFilter');
+    if(!box || !input) return;
+    const items = Array.from(box.querySelectorAll('.user-item'));
+    input.addEventListener('input', function(){
+      const q = this.value.trim().toLowerCase();
+      items.forEach(el=>{
+        const hay = (el.dataset.q || '').includes(q);
+        el.style.display = hay ? '' : 'none';
+      });
+    });
+  })();
+</script>
+{% endblock %}
+
+

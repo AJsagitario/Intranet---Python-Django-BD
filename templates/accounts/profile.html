@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Mi perfil</h2>
+<p><strong>Usuario:</strong> {{ user_obj.username }}</p>
+<p><strong>Nombre:</strong> {{ user_obj.get_full_name }}</p>
+<p><strong>Email:</strong> {{ user_obj.email }}</p>
+<p><strong>Área:</strong> {{ user_obj.area }}</p>
+<p><strong>Rol admin:</strong> {{ user_obj.is_staff|yesno:"Sí,No" }}</p>
+
+{% if user_obj.avatar %}
+  <img src="{{ user_obj.avatar.url }}" alt="avatar" style="width:120px;height:120px;border-radius:50%;">
+{% else %}
+  <p>Sin avatar</p>
+{% endif %}
+
+<p><a class="btn" href="{% url 'profile_edit' %}">Editar perfil</a></p>
+{% endblock %}

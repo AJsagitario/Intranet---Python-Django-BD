@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Gestión de tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/task.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+  <h1 class="tasks-title">Gestión de Tareas</h1>
+
+  <!-- Formulario de creación -->
+  <form class="task-form" action="{% url 'tasks:create' %}" method="post">
+    {% csrf_token %}
+    <div class="task-form-row">
+      <input type="text" name="title" placeholder="Título de la tarea" required>
+      <input type="date" name="due_date">
+      <select name="assigned_to">
+        <option value="">-- Asignar a --</option>
+        {% for u in users %}
+          <option value="{{ u.id }}">{{ u.username }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn-primary">➕ Crear</button>
+    </div>
+    <textarea name="description" rows="2" placeholder="Descripción (opcional)"></textarea>
+  </form>
+
+  <!-- Buscador -->
+  <div class="task-search">
+    <input type="search" id="taskSearch" placeholder="Buscar tarea..." value="{{ q|default:'' }}">
+  </div>
+
+  <!-- Mis tareas asignadas -->
+  <section class="tasks-section">
+    <h2>📌 Tareas asignadas a mí</h2>
+    {% if tasks_for_me %}
+      <ul class="task-list" id="tasksMine">
+        {% for t in tasks_for_me %}
+          <li class="task-item {% if t.status == 'done' %}done{% endif %}">
+            <div class="task-info">
+              <h3>{{ t.title }}</h3>
+              <p>{{ t.description|default:"Sin descripción" }}</p>
+              <small>Creada por: {{ t.created_by.username }}</small>
+              {% if t.due_date %}
+                <small>Fecha límite: {{ t.due_date }}</small>
+              {% endif %}
+            </div>
+            <div class="task-actions">
+              <a href="{% url 'tasks:toggle' t.id %}" class="btn-toggle">{% if t.status == 'done' %}↩️ Reabrir{% else %}✅ Completar{% endif %}</a>
+              <a href="{% url 'tasks:delete' t.id %}" class="btn-delete" onclick="return confirm('¿Eliminar esta tarea?');">🗑️</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty-msg">No tienes tareas asignadas.</p>
+    {% endif %}
+  </section>
+
+  <!-- Tareas que creé -->
+  <section class="tasks-section">
+    <h2>🧠 Tareas que he creado</h2>
+    {% if tasks_by_me %}
+      <ul class="task-list" id="tasksCreated">
+        {% for t in tasks_by_me %}
+          <li class="task-item {% if t.status == 'done' %}done{% endif %}">
+            <div class="task-info">
+              <h3>{{ t.title }}</h3>
+              <p>{{ t.description|default:"Sin descripción" }}</p>
+              <small>Asignada a: {{ t.assigned_to.username|default:"Nadie" }}</small>
+              {% if t.due_date %}
+                <small>Fecha límite: {{ t.due_date }}</small>
+              {% endif %}
+            </div>
+            <div class="task-actions">
+              <a href="{% url 'tasks:toggle' t.id %}" class="btn-toggle">{% if t.status == 'done' %}↩️ Reabrir{% else %}✅ Completar{% endif %}</a>
+              <a href="{% url 'tasks:delete' t.id %}" class="btn-delete" onclick="return confirm('¿Eliminar esta tarea?');">🗑️</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty-msg">No has creado ninguna tarea aún.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/task.js' %}"></script>
+{% endblock %}

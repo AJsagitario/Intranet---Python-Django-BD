@@ -11,12 +11,18 @@
   <nav class="mainnav">
     <a href="{% url 'home' %}" data-active="chat">Mensajes</a>
     <a href="#" data-active="files">Archivos</a>
-    <a href="#" data-active="tasks">Tareas</a>
+    <a href="{% url 'tasks:index' %}" data-active="tasks">Tareas</a>
   </nav>
 
   <div class="userbox">
     <span class="bell" title="Notificaciones">🔔</span>
-    <div class="avatar">👤</div>
+    <a href="{% url 'profile' %}" class="user-pill">
+      {% if request.user.avatar %}
+        <img src="{{ request.user.avatar.url }}" alt="avatar" style="height:28px;width:28px;border-radius:50%;object-fit:cover;">
+      {% else %}
+        <span class="avatar-fallback">👤</span>
+      {% endif %}
+    </a>
     <a class="logout" href="{% url 'logout' %}">Salir</a>
   </div>
 </header>

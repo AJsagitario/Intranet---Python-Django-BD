@@ -24,9 +24,23 @@
 
     <div class="side-section">
       <div class="side-title">Mensajes directos</div>
-      <div class="side-list">
+
+      <input
+        type="search"
+        id="dmSearch"
+        placeholder="Buscar usuario..."
+        style="width:100%;padding:6px;margin-bottom:8px;border:1px solid #ccc;border-radius:6px;font-size:0.9rem;"
+      />
+
+      <div id="dmList" class="side-list">
         {% for u in sidebar_dm_users %}
-          <a class="side-item {% if not is_channel and current_dm_id == u.id %}active{% endif %}" href="{% url 'dm' u.id %}">👤 {{ u.username }}</a>
+          <a
+            class="side-item {% if not is_channel and current_dm_id == u.id %}active{% endif %}"
+            href="{% url 'dm' u.id %}"
+            data-name="{{ u.username|lower }}"
+          >
+            👤 {{ u.username }}
+          </a>
         {% empty %}
           <div class="side-empty">Sin usuarios</div>
         {% endfor %}
@@ -67,7 +81,7 @@
     <form id="chatForm" class="composer" data-room="{{ room }}" data-me="{{ request.user.username }}">
       {% csrf_token %}
       <div class="composer-box">
-        <textarea id="chatInput" rows="1" placeholder="Escribe un mensaje… (Enter para enviar, Shift+Enter para salto de línea)"></textarea>
+        <textarea id="chatInput" rows="1" placeholder="GoVision"></textarea>
         <div class="composer-actions">
           <label class="icon-btn" title="Adjuntar (próximamente)">
             📎 <input id="fileInput" type="file" style="display:none" disabled>

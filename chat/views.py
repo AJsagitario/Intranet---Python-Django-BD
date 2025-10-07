@@ -10,25 +10,35 @@ from django.views.decorators.http import require_POST
 User = get_user_model()
 
 def _sidebar_context(user):
-    # Canales donde el usuario es miembro
-    my_channels = (Channel.objects
-                   .filter(members__user=user)
-                   .order_by("name")
-                   .distinct())
+    # Canales visibles en el sidebar
+    if user.is_staff or user.is_superuser:
+        my_channels = Channel.objects.all().order_by("name")
+    else:
+        my_channels = (
+            Channel.objects
+            .filter(members__user=user)
+            .order_by("name")
+            .distinct()
+        )
 
-    # DMs recientes: usuarios con los que tengo conversación
-    # Tomamos último timestamp para ordenar
-    dm_pairs = (Message.objects
-                .filter(Q(sender=user) | Q(receiver=user), channel__isnull=True)
-                .values("sender", "receiver")
-               )
-    # Obtén partners (el "otro" usuario)
+    # DMs: si quieres "recientes", usa partner_ids (ver abajo); si no, deja todos activos
+    dm_pairs = (
+        Message.objects
+        .filter(Q(sender=user) | Q(receiver=user), channel__isnull=True)
+        .values("sender", "receiver")
+    )
     partner_ids = set()
     for row in dm_pairs:
         a, b = row["sender"], row["receiver"]
         if a and b:
             partner_ids.add(a if b == user.id else b)
-    dm_users = User.objects.filter(is_active=True).exclude(id=user.id).order_by("username")
+
+    dm_users = (
+        User.objects
+        .filter(is_active=True)  # <- usa solo con quienes hubo DM
+        .exclude(id=user.id)
+        .order_by("username")
+    )
 
     return {"sidebar_channels": my_channels, "sidebar_dm_users": dm_users}
 

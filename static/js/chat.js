@@ -57,4 +57,20 @@
     input.value = '';
     input.dispatchEvent(new Event('input')); // para actualizar altura y botón
   });
+
+// --- BÚSQUEDA DE DMs ---
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("dmSearch");
+    const users = document.querySelectorAll("#dmList .side-item");
+
+    if (!input || !users.length) return;
+
+    input.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      users.forEach((el) => {
+        const name = (el.dataset.name || "").toLowerCase();
+        el.style.display = name.includes(q) ? "" : "none";
+      });
+    });
+  });
 })();
